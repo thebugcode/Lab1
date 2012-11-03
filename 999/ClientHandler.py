@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
+# Name:        ClientHandler
+# Purpose:     Handles a CLient
 #
 # Author:      Vlad
 #
@@ -11,72 +11,36 @@
 
 import socket
 import threading
-import pyodbc
-import json
+from Configurations import database as DatabaseConfig
+from DatabaseManager import DatabaseManager
+from JSONBuilder import JSONBuilder
 
 class ClientHandler(threading.Thread):
   def __init__(self, client):
     threading.Thread.__init__(self)
-
-    self.__running = False
-    self.__socket = client[0]
+    self._running = False
+    self._socket = client[0]
 
 
   def run(self):
-    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.1.104;DATABASE=Psycar;UID=sa;PWD=Kentsfield1')
-    cursor = cnxn.cursor()
-
-    """
-    cursor.execute("select Id from Dan")
-    row = cursor.fetchall()
-
-    if row:
-        print row
-    print "Connected"
-
-
-    cursor.execute("select Id from Dan")
-    row = cursor.fetchall()
-
-
-    if row:
-        print row
-    print "Connected"
-    """
-
-    cursor.execute("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Dan1'")
-    row = cursor.fetchall()
-    print row
-
-
-"""
-for i in range (0,100):
-      cursor.execute("insert into Dan(Id) values(" + str(i) + ")")
-      cnxn.commit()
-
-for i in range (0,100):
-        cursor.execute("delete from Dan where Id = " + str(i) + "")
-        print cursor.rowcount, 'products deleted'
-        cnxn.commit()
-
-cursor.execute("delete from Dan")
-    print cursor.rowcount, 'products deleted'
-    cnxn.commit()
-"""
-
-"""
-    self.__running = True
-    while self.__running:
+    self._running = True
+    while self._running:
       try:
-        # LOGGING
-        #data = self.__socket.recv(1024)
-
-
-
-        #print self.__socket.getsockname(), "Data received:", data
+        restQuery = self._socket.recv(1024)
+        print restQuery
+        #restQuery = restQuery[10:]
       except Exception as exc:
         # LOGGING
-        print self.__socket.getsockname(), exc
+        print self._socket.getsockname(), exc
         break
+      db = DatabaseManager(DatabaseConfig.host)
+
+      sqlQuery = DatabaseManager.getSQLqueryFromREST(restQuery)
+      carObjects = db.SelectFromDatabase(sqlQuery)
+
+      print carObjects
+      jsonString = JSONBuilder.getJSON(carObjects)
+      print jsonString
+      self._socket.send(jsonString)
+
     self
-    """

@@ -17,15 +17,14 @@ class JSONBuilder(object):
   """
   @staticmethod
   def getJSON(cars):
-    strings = []
-
+    jsonObjects = []
     for car in cars:
       jsonObject = JSONObject(car)
-      objects.append(jsonObject)
+      jsonObjects.append(jsonObject)
 
-    jsonString = JSONBuilder.buildJSON(objects)
+    jsonString = JSONBuilder.buildJSON(jsonObjects)
     jsonString = JSONBuilder.beautifierJSON(jsonString)
-    print jsonString
+    return jsonString
 
   @staticmethod
   def buildJSON(objectsJSON):
@@ -163,7 +162,7 @@ class FieldValue(object):
 
 
 
-
+"""
 #JSONBuilder.BuildJSON(["BMW", "M3"])
 cars = []
 dictionary = {"Producator":"Mercedes","Caroserie":"Sedan","Model":"C180","AnProductie":1999,"VolumMotor":1800,
@@ -178,3 +177,4 @@ cars.append(car)
 
 
 print JSONBuilder.getJSON(cars)
+"""
