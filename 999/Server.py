@@ -39,6 +39,8 @@ class Server(threading.Thread):
         # Accept a new client
         client = self.__socket.accept()
         print "New Client:", client[0]
+
+        # Open a new handler
         clientHandler = ClientHandler(client)
         clientHandler.start()
 

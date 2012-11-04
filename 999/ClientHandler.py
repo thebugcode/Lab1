@@ -11,6 +11,7 @@
 
 import socket
 import threading
+
 from Configurations import database as DatabaseConfig
 from DatabaseManager import DatabaseManager
 from JSONBuilder import JSONBuilder
@@ -28,19 +29,23 @@ class ClientHandler(threading.Thread):
       try:
         restQuery = self._socket.recv(1024)
         print restQuery
-        #restQuery = restQuery[10:]
       except Exception as exc:
-        # LOGGING
         print self._socket.getsockname(), exc
         break
+
+      # Database connection
       db = DatabaseManager(DatabaseConfig.host)
 
+      # Get SQL Query from REST
       sqlQuery = DatabaseManager.getSQLqueryFromREST(restQuery)
+
+      # Get the result from SQL Server
       carObjects = db.SelectFromDatabase(sqlQuery)
 
-      print carObjects
+      # Build a JSON String from the result
       jsonString = JSONBuilder.getJSON(carObjects)
-      print jsonString
+
+      #Send to the server the result
       self._socket.send(jsonString)
 
-    self
+    self._socket.close()
