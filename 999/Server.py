@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
+# Name:        Server
 # Purpose:
 #
 # Author:      Vlad
@@ -9,7 +9,8 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
-import Configurations
+import pyodbc
+from Configurations import server as ServerConfig
 from ClientHandler import ClientHandler
 
 import socket
@@ -19,11 +20,11 @@ class Server(threading.Thread):
   def __init__(self):
     threading.Thread.__init__(self)
 
-    self.__host = Configurations.server.host
-    self.__port = Configurations.server.port
-    self.__backlog = Configurations.server.backlog
-    self.__alive = Configurations.server.alive
-    self.__timeout = Configurations.server.timeout
+    self.__host = ServerConfig.host
+    self.__port = ServerConfig.port
+    self.__backlog = ServerConfig.backlog
+    self.__alive = ServerConfig.alive
+    self.__timeout = ServerConfig.timeout
     self.__socket = None
 
 
@@ -34,17 +35,16 @@ class Server(threading.Thread):
       self.__socket.listen(self.__backlog)
       self.__socket.settimeout(self.__timeout)
 
-
       while(self.__alive):
         # Accept a new client
         client = self.__socket.accept()
-        print "New Client"
+        print "New Client:", client[0]
+
+        # Open a new handler
         clientHandler = ClientHandler(client)
         clientHandler.start()
-        print "New Client"
 
       self.__socket.close()
-
 
 
 test = Server()
@@ -62,6 +62,18 @@ print "Done"
 
 
 
+
+"""
+cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.1.101;DATABASE=Psycar;UID=sa;PWD=Kentsfield1')
+cursor = cnxn.cursor()
+
+cursor.execute("select * from AutomobileVanzare")
+row = cursor.fetchall()
+
+if row:
+  print row
+print "Connected"
+"""
 
 
 

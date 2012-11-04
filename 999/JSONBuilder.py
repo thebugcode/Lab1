@@ -17,21 +17,22 @@ class JSONBuilder(object):
   """
   @staticmethod
   def getJSON(cars):
-    strings = []
-
+    jsonObjects = []
+    # Transform each car object into a json object
     for car in cars:
       jsonObject = JSONObject(car)
-      objects.append(jsonObject)
+      jsonObjects.append(jsonObject)
 
-    jsonString = JSONBuilder.buildJSON(objects)
+    jsonString = JSONBuilder.buildJSON(jsonObjects)
     jsonString = JSONBuilder.beautifierJSON(jsonString)
-    print jsonString
+    return jsonString
 
   @staticmethod
   def buildJSON(objectsJSON):
     jsonString = ''
     i = 0
 
+    # Serialize JSON object
     for objectJSON in objectsJSON:
       jsonString += str(objectJSON)
       if i < len(objectsJSON) - 1:
@@ -42,6 +43,7 @@ class JSONBuilder(object):
 
   @staticmethod
   def beautifierJSON(jsonString):
+    # Puts a new line after each '{'
     position = -1
     while 1:
       position = string.find(jsonString, '{', position+len("{"))
@@ -49,6 +51,7 @@ class JSONBuilder(object):
         break
       jsonString = jsonString[0:position+1] + "\r\n" + jsonString[position+1:]
 
+    # Puts a new line after each '}'
     position = -1
     while 1:
       position = string.find(jsonString, '}', position+len("\r\n}"))
@@ -56,6 +59,7 @@ class JSONBuilder(object):
         break
       jsonString = jsonString[0:position] + "\r\n" + jsonString[position:]
 
+    # Puts new line after ','
     position = -1
     while 1:
       position = string.find(jsonString, ',', position+len("\r\n}"))
@@ -63,7 +67,7 @@ class JSONBuilder(object):
         break
       jsonString = jsonString[0:position+1] + "\r\n" + jsonString[position+1:]
 
-
+    # Puts "  " (double space) before fields
     lines = jsonString.splitlines(True)
     jsonString = ''
     for line in lines:
@@ -163,18 +167,6 @@ class FieldValue(object):
 
 
 
+"""
 
-#JSONBuilder.BuildJSON(["BMW", "M3"])
-cars = []
-dictionary = {"Producator":"Mercedes","Caroserie":"Sedan","Model":"C180","AnProductie":1999,"VolumMotor":1800,
-                      "Pret":8000,"Carburant":"Benzina","Link":"http://www.google.ro"}
-car = CarObject(dictionary)
-cars.append(car)
-
-dictionary = {"Producator":"BMW","Caroserie":"Sedan","Model":"M3","AnProductie":1999,"VolumMotor":1800,
-                      "Pret":8000,"Carburant":"Diesel","Link":"http://www.google.ro"}
-car = CarObject(dictionary)
-cars.append(car)
-
-
-print JSONBuilder.getJSON(cars)
+"""
